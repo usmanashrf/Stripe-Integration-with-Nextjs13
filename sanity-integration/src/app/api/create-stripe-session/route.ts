@@ -1,3 +1,4 @@
+import { NextResponse } from "next/server";
 import Stripe from "stripe";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
@@ -6,12 +7,12 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
 
 
 
-export  async function POST(req: any, res: any){
+export  async function POST(req: any, res: NextResponse){
     const {item}= await req.json();
     // const { item } = data.body
 
    // console.log("data detials...........",data);
-    console.log("item detials...........",item);
+    // console.log("item detials...........",item);
 
     const transformedItem = {
          price_data: {
@@ -39,15 +40,13 @@ export  async function POST(req: any, res: any){
         payment_method_types: ['card'],
         line_items: [transformedItem],
         mode: 'payment',
-        success_url: redirectURL + '?status=success',
-        cancel_url: redirectURL + '?status=cancel',
+        success_url: redirectURL + '/payment/success',
+        cancel_url: redirectURL + '/payment/fail',
         metadata: {
           images: item.image,
         },
       });
 
-      console.log("response-------------------",await session.url);
-     res.status(200).json({
-        url:session.url
-     })
+    //    console.log("response-------------------",await session);
+    return NextResponse.json(session?.id) ;
   };
