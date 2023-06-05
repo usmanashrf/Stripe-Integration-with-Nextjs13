@@ -82,6 +82,8 @@ import { loadStripe } from "@stripe/stripe-js";
 
 ```
 npm install @stripe/stripe-js
+```
+
 in your Product.tsx file add below code
 ```
   const publishableKey = process.env
