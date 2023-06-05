@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import Image from "next/image";
 import { loadStripe } from "@stripe/stripe-js";
 
-export default function index() {
+export default function Product() {
     const [loading, setLoading] = useState(false);
 
   const [item, setItem] = useState({
