@@ -12,7 +12,7 @@ STRIPE_SECRET_KEY=YOUR_STRIPE_SECRET_KEY
  ```
 - You can get these credentials from Dashboard -> Developers -> API Keys.
 - Now need to build an API to get the session id that is required for redirecting the user to the checkout page.
-- Create a new file in api/create-stripe-session.js. And add the following.
+- Create a new file in api/create-stripe-session.ts. And add the following.
 ```
 import { NextResponse } from "next/server";
 import Stripe from "stripe";
@@ -45,4 +45,32 @@ const transformedItem = {
         
       };
 ```
+### Creating Stripe Session in the backend
+in api/create-stripe-session.ts. file you will need to create a stripe session object where you need to define some data.
 
+```
+ const redirectURL =
+    process.env.NODE_ENV === 'development'
+      ? 'http://localhost:3000'
+      : 'https://stripe-checkout-next-js-demo.vercel.app';
+
+      const session = await stripe.checkout.sessions.create({
+        payment_method_types: ['card'],
+        line_items: [transformedItem],
+        mode: 'payment',
+        success_url: redirectURL + '/payment/success',
+        cancel_url: redirectURL + '/payment/fail',
+        metadata: {
+          images: item.image,
+        },
+      });
+      return NextResponse.json(session?.id) ;
+```
+
+payment_method_type: In this, we add the payment methods to pay the price of the product. [Click here](https://stripe.com/docs/api/checkout/sessions/create#create_checkout_session-payment_method_types) to know more payment methods.
+
+success_url: In success_url, you define where the user will go after the payment is successful.
+
+cancel_url: In the cancel_url, you define where the user will go if the user clicks the back button. It can be a cancel page or the checkout page as well.
+
+metadata: In metadata, we will add images of the product, if you want you can add other options too.
