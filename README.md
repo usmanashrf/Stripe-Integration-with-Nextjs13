@@ -72,4 +72,47 @@ in api/create-stripe-session.ts. file you will need to create a stripe session o
 - cancel_url: In the [cancel_url](https://stripe.com/docs/api/checkout/sessions/object#checkout_session_object-cancel_url), you define where the user will go if the user clicks the back button. It can be a cancel page or   the checkout page as well.
 - metadata: In [metadata](https://stripe.com/docs/api/checkout/sessions/create#create_checkout_session-metadata), we will add images of the product, if you want you can add other options too.
 
+Now, our backend is ready, now we have to send a POST request to API to get the session.
 
+#### Redirecting to Stripe Checkout Page
+install following library
+```
+import { loadStripe } from "@stripe/stripe-js";
+```
+
+```
+npm install @stripe/stripe-js
+in your Product.tsx file add below code
+```
+  const publishableKey = process.env
+    .NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY as string;
+  const stripePromise = loadStripe(publishableKey);
+```
+- Now, we'll create createCheckoutSession function to get the Stripe Session for the checkout.
+```
+const createCheckOutSession = async () => {
+    
+    const stripe = await stripePromise;
+
+    const checkoutSession = await fetch(
+      "http://localhost:3000/api/create-stripe-session",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          item: item,
+        }),
+      }
+    );
+
+    const sessionID= await checkoutSession.json();
+    const result = await stripe?.redirectToCheckout({
+      sessionId: sessionID,
+    });
+    if (result?.error) {
+      alert(result.error.message);
+    }
+  };
+```
