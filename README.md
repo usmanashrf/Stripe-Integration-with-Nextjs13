@@ -1,5 +1,5 @@
 # Nextjs_Stripe_Integration
-### Demo project link https://sanity-integration-usmanashrf.vercel.app/
+### Demo project link https://stripe-integration-usmanashrf.vercel.app
 - First create Nextjs 13 app and add product page, you can see in /components/Product/Product.tsx
 - Create stripe account and open dashboard then add new a project 
 - Install stripe in you local project
