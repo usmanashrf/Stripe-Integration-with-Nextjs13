@@ -21,3 +21,28 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
   apiVersion: "2022-11-15",
 });
 ```
+
+- Creating the shape for the item needed by Stripe.
+
+There is a particular type of object which Stripe expects to get, this is the object. You should use your local currency instead of "usd" if you want.
+
+```
+const transformedItem = {
+         price_data: {
+          currency: 'usd',
+          product_data:{
+            name: item.name,
+            description: item.description,
+            images:[item.image],
+            metadata:{name:"some additional info",
+                     task:"Usm created a task"},
+
+          },
+          unit_amount: item.price * 100,
+
+        },
+        quantity: item.quantity,
+        
+      };
+```
+
