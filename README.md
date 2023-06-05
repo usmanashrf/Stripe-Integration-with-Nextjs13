@@ -67,10 +67,9 @@ in api/create-stripe-session.ts. file you will need to create a stripe session o
       return NextResponse.json(session?.id) ;
 ```
 
-payment_method_type: In this, we add the payment methods to pay the price of the product. [Click here](https://stripe.com/docs/api/checkout/sessions/create#create_checkout_session-payment_method_types) to know more payment methods.
+- payment_method_type: In this, we add the payment methods to pay the price of the product. [Click here](https://stripe.com/docs/api/checkout/sessions/create#create_checkout_session-payment_method_types) to know more payment methods.
+- success_url: In [success_url](https://stripe.com/docs/api/checkout/sessions/create#create_checkout_session-success_url), you define where the user will go after the payment is successful.
+- cancel_url: In the [cancel_url](https://stripe.com/docs/api/checkout/sessions/object#checkout_session_object-cancel_url), you define where the user will go if the user clicks the back button. It can be a cancel page or   the checkout page as well.
+- metadata: In [metadata](https://stripe.com/docs/api/checkout/sessions/create#create_checkout_session-metadata), we will add images of the product, if you want you can add other options too.
 
-success_url: In success_url, you define where the user will go after the payment is successful.
 
-cancel_url: In the cancel_url, you define where the user will go if the user clicks the back button. It can be a cancel page or the checkout page as well.
-
-metadata: In metadata, we will add images of the product, if you want you can add other options too.
