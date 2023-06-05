@@ -53,7 +53,7 @@ in api/create-stripe-session.ts. file you will need to create a stripe session o
  const redirectURL =
     process.env.NODE_ENV === 'development'
       ? 'http://localhost:3000'
-      : 'https://stripe-checkout-next-js-demo.vercel.app';
+      : 'your live vercel app link';
 
       const session = await stripe.checkout.sessions.create({
         payment_method_types: ['card'],
