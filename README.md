@@ -116,3 +116,19 @@ const createCheckOutSession = async () => {
     }
   };
 ```
+Now, we have to call this function while the user clicks the Buy button.
+And onClick={createCheckoutSession}
+
+```
+<button
+  disabled={item.quantity === 0}
+  onClick={createCheckOutSession}
+  className='bg-blue-500 hover:bg-blue-600 text-white block w-full py-2 rounded mt-2 disabled:cursor-not-allowed disabled:bg-blue-100'
+>
+  Buy
+</button>
+```
+- we have came to end now run your project
+```
+npm run dev
+```
