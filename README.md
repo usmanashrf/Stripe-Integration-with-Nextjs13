@@ -182,5 +182,20 @@ Note: you'll get your webhookSecret from stripe dashboard
 
 Above stepup is for deployed project if you want to test your webhook locally then you need to do some extra work
 #### Test in local Enviroment
-- Download stripe-cli from here [ https://github.com/stripe/stripe-cli/releases/tag/v1.14.7
-] according to your machine Operation system
+- Download stripe-cli from [here](https://github.com/stripe/stripe-cli/releases/tag/v1.14.7
+) according to your machine Operation system
+- You'll get zip file, extract that file and open cmd in extracted directory
+- Run following command in cmd
+
+```
+stripe login
+```
+- After login forward events to your webhook run followind command
+
+```
+stripe listen --events checkout.session.completed --forward-to localhost:3000/api/webhook
+```
+- Once you run above command you'll get Your webhook signing secret which will look like this "whsec_08d........"
+- copy your webhook secret key and paste in your project .env file with name of STRIPE_WEBHOOK_SECRET
+
+Now run your local project do checkout and once payment flow completed your local webhook api will hit and you'll get data about the transaction and you can use the coming data according to your need
