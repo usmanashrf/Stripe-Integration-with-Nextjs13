@@ -135,6 +135,45 @@ And onClick={createCheckoutSession}
 ```
 npm run dev
 ```
-# Step 02: Webhook setup
+# Step 02: Webhooks setup
 ### what is webhook?
 A webhook is a method of communication used by applications or services to send real-time data or notifications to other applications or services. It is a way for one application to provide information to another application automatically and instantly
+Webhooks can be used to send real-time notifications about specific events, such as new user registrations, payment confirmations, or status updates
+
+Adding following step to integrate stripe webhooks 
+-First thing in your project add api/webhook/route.ts endpoint which will handle the calls coming from stripe
+- Add POST method and paste the following code
+
+```
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
+  apiVersion: "2022-11-15",
+});
+const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET as string;
+
+export  async function POST(req: any, res: any){
+    
+    try {
+    const rawBody = await req.text();
+    const sig = req.headers.get("stripe-signature") as string
+    const event = stripe.webhooks.constructEvent(rawBody,sig,webhookSecret);
+    if ( 'checkout.session.completed' === event.type ) {
+        const session = event.data.object;
+       //Once you'll get data you can use it according to your 
+        //reqirement for making update in DB
+    } else {
+        res.setHeader("Allow", "POST");
+        // res.status(405).end("Method Not Allowed");
+    }
+    } catch (err: any) {
+        console.log("Error in webhook----------", err);
+        // res.status(400).send(`Webhook Error: ${err.message}`);
+        return;
+    }
+   
+}
+```
+
+- First thing on your stripe dashboard in developers mode go to webhooks tab or you simple search webhooks in search bar
+- You'll find two parts "Hosted endpoints' and "Local listeners"
+- Click on Add endpoint button
+- New page will open simple enter url of your hosted project api
