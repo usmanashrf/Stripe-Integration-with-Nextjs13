@@ -1,4 +1,4 @@
-# Nextjs_Stripe_Integration
+# Step 01: Nextjs_Stripe_Integration
 ### Demo project link https://stripe-integration-usmanashrf.vercel.app
 - First create Nextjs 13 app and add product page, you can see in /components/Product/Product.tsx
 - Create stripe account and open dashboard then add new a project 
@@ -135,3 +135,67 @@ And onClick={createCheckoutSession}
 ```
 npm run dev
 ```
+# Step 02: Webhooks setup
+### what is webhook?
+A webhook is a method of communication used by applications or services to send real-time data or notifications to other applications or services. It is a way for one application to provide information to another application automatically and instantly
+Webhooks can be used to send real-time notifications about specific events, such as new user registrations, payment confirmations, or status updates
+
+Adding following step to integrate stripe webhooks 
+-First thing in your project add api/webhook/route.ts endpoint which will handle the calls coming from stripe
+- Add POST method and paste the following code
+
+```
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
+  apiVersion: "2022-11-15",
+});
+const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET as string;
+
+export  async function POST(req: any, res: any){
+    
+    try {
+    const rawBody = await req.text();
+    const sig = req.headers.get("stripe-signature") as string
+    const event = stripe.webhooks.constructEvent(rawBody,sig,webhookSecret);
+    if ( 'checkout.session.completed' === event.type ) {
+        const session = event.data.object;
+       //Once you'll get data you can use it according to your 
+        //reqirement for making update in DB
+    } else {
+        res.setHeader("Allow", "POST");
+        // res.status(405).end("Method Not Allowed");
+    }
+    } catch (err: any) {
+        console.log("Error in webhook----------", err);
+        // res.status(400).send(`Webhook Error: ${err.message}`);
+        return;
+    }
+   
+}
+```
+Note: you'll get your webhookSecret from stripe dashboard
+
+- After adding above step now go to your stripe dashboard in developers mode open webhooks tab or you simple search webhooks in search bar
+- You'll find two parts "Hosted endpoints' and "Local listeners"
+- Click on Add endpoint button
+- New page will open simple enter url of your hosted project webhook api
+- Select events to listen to checkout.session.completed and click on Add endpoint button
+
+Above stepup is for deployed project if you want to test your webhook locally then you need to do some extra work
+#### Test in local Enviroment
+- Download stripe-cli from [here](https://github.com/stripe/stripe-cli/releases/tag/v1.14.7
+) according to your machine Operation system
+- You'll get zip file, extract that file and open cmd in extracted directory
+- Run following command in cmd
+
+```
+stripe login
+```
+- After login forward events to your webhook run followind command
+
+```
+stripe listen --events checkout.session.completed --forward-to localhost:3000/api/webhook
+```
+- Once you run above command you'll get Your webhook signing secret which will look like this "whsec_08d........"
+- copy your webhook secret key and paste in your project .env file with name of STRIPE_WEBHOOK_SECRET
+
+Now run your local project do checkout and once payment flow completed your local webhook api will hit and you'll get data about the transaction and you can use the coming data according to your need
