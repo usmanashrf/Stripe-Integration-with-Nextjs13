@@ -6,13 +6,8 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
 });
 
 
-
 export  async function POST(req: any, res: NextResponse){
     const {item}= await req.json();
-    // const { item } = data.body
-
-   // console.log("data detials...........",data);
-    // console.log("item detials...........",item);
 
     const transformedItem = {
          price_data: {
@@ -21,8 +16,7 @@ export  async function POST(req: any, res: NextResponse){
             name: item.name,
             description: item.description,
             images:[item.image],
-            metadata:{name:"some additional info",
-                     task:"Usm created a task"},
+            metadata:{},
 
           },
           unit_amount: item.price * 100,
@@ -34,7 +28,7 @@ export  async function POST(req: any, res: NextResponse){
       const redirectURL =
     process.env.NODE_ENV === 'development'
       ? 'http://localhost:3000'
-      : 'https://stripe-integration-usmanashrf.vercel.app';
+      : 'your deployed url';
 
       const session = await stripe.checkout.sessions.create({
         payment_method_types: ['card'],
@@ -44,6 +38,8 @@ export  async function POST(req: any, res: NextResponse){
         cancel_url: redirectURL + '/payment/fail',
         metadata: {
           images: item.image,
+          name:"some additional info",
+          task:"Usman created a task"
         },
       });
 
