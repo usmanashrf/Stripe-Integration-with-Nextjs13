@@ -172,8 +172,15 @@ export  async function POST(req: any, res: any){
    
 }
 ```
+Note: you'll get your webhookSecret from stripe dashboard
 
-- First thing on your stripe dashboard in developers mode go to webhooks tab or you simple search webhooks in search bar
+- After adding above step now go to your stripe dashboard in developers mode open webhooks tab or you simple search webhooks in search bar
 - You'll find two parts "Hosted endpoints' and "Local listeners"
 - Click on Add endpoint button
-- New page will open simple enter url of your hosted project api
+- New page will open simple enter url of your hosted project webhook api
+- Select events to listen to checkout.session.completed and click on Add endpoint button
+
+Above stepup is for deployed project if you want to test your webhook locally then you need to do some extra work
+#### Test in local Enviroment
+- Download stripe-cli from here [ https://github.com/stripe/stripe-cli/releases/tag/v1.14.7
+] according to your machine Operation system
